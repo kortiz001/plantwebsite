@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create EFS system and Mount Targets for Plant VPC"
+
+Parameters:
+    VPC:
+        Type: AWS::EC2::VPC::Id
+        Description: The VPC identity
+
+    SubnetID1:
+        Type: AWS::EC2::Subnet::Id
+        Description: The subnet where to launch the service
+
+    SubnetID2:
+        Type: AWS::EC2::Subnet::Id
+        Description: the subnet where to Launch the service
+
+    SubnetID3:
+        Type: AWS::EC2::Subnet::Id
+        Description: The subnet where to launch the service
+    
+Resources:
+    EFSSecurityGroup:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "Security Group for the Plant Website SG"
+            GroupName: "plantwebsite-efs-sg"
+            VpcId: !Ref VPC
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 2049
+                IpProtocol: "tcp"
+                ToPort: 2049
+
+    EFSFileSystem:
+        Type: AWS::EFS::FileSystem
+        Properties:
+            BackupPolicy:
+              Status: ENABLED
+            Encrypted: true
+            PerformanceMode: generalPurpose
+            Encrypted: true
+            ThroughputMode: bursting
+
+    MountTarget1:
+        Type: AWS::EFS::MountTarget
+        Properties: 
+            FileSystemId: !Ref EFSFileSystem
+            SecurityGroups: 
+              - !Ref EFSSecurityGroup
+            SubnetId: !Ref SubnetID1
+
+    MountTarget2:
+        Type: AWS::EFS::MountTarget
+        Properties: 
+            FileSystemId: !Ref EFSFileSystem
+            SecurityGroups: 
+              - !Ref EFSSecurityGroup
+            SubnetId: !Ref SubnetID2
+
+    MountTarget3:
+        Type: AWS::EFS::MountTarget
+        Properties: 
+            FileSystemId: !Ref EFSFileSystem
+            SecurityGroups: 
+              - !Ref EFSSecurityGroup
+            SubnetId: !Ref SubnetID3
+
+Outputs:
+  EFS:
+    Description: The created EFS 
+    Value: !Ref EFSFileSystem
+
+  EFSMountTarget1:
+    Description: The EFS MountTarget1
+    Value: !Ref MountTarget1
+
+  EFSMountTarget2:
+    Description: The EFS MountTarget2
+    Value: !Ref MountTarget2
+
+  EFSMountTarget3:
+    Description: The EFS MountTarget3
+    Value: !Ref MountTarget3
