@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Build Postgresql database.
+
+Parameters:
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  DBInstanceIdentifier:
+    Type: String
+    Default: "django-db-plant-website"
+  DBUsername:
+    NoEcho: "true"
+    Description: Username for Postgresql database access
+    Type: String
+    MinLength: "1"
+    MaxLength: "16"
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+    Default: "postgres"
+  DBPassword:
+    NoEcho: "true"
+    Description: Password Postgresql database access
+    Type: String
+    MinLength: "8"
+    MaxLength: "41"
+    AllowedPattern: "[a-zA-Z0-9]*"
+    ConstraintDescription: Must contain only alphanumeric characters.
+
+Resources:
+  WebAppDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Ref DBInstanceIdentifier
+      AllocatedStorage: "20"
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      Tags:
+        - Key: Name
+          Value: "django-db-plant-website"
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
