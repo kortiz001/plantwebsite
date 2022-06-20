@@ -17,6 +17,7 @@ spec:
       containers:
         - image: zitro7523/kubernetes-django-images:plant-website
           name: django
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
               name: gunicorn

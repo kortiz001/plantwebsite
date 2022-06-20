@@ -39,5 +39,6 @@ Resources:
       Tags:
         - Key: Name
           Value: "django-db-plant-website"
+      VPCSecurityGroups: ["sg-06412ae5fd0bd1ff3"]
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
